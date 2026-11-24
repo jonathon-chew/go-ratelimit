@@ -14,6 +14,13 @@ The package currently exposes:
 - `Refill()` to update the bucket from elapsed time
 - `Remaining()` to inspect how many tokens have been consumed from capacity
 
+Buckets start at full capacity. A successful `AllowN(n)` consumes `n` tokens,
+including fractional amounts, and refills are capped at the configured capacity.
+Capacity and refill rates below `1` are normalized to `1`; `NaN` and infinite
+capacity or refill-rate values are rejected. `AllowN(0)` succeeds without
+consuming tokens, while negative, `NaN`, and infinite request values are
+rejected.
+
 ## Example
 
 ```go
@@ -32,7 +39,9 @@ Run the tests from the repository root:
 go test ./...
 ```
 
-The tests cover initial capacity, refill behaviour, and concurrent calls.
+The tests cover exact capacity exhaustion, fractional tokens, refill and
+capping, zero and invalid rates, invalid `AllowN` values, concurrent callers,
+and long idle periods.
 
 ## Current scope
 
