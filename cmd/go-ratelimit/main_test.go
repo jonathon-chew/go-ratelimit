@@ -125,13 +125,11 @@ func TestTokenBucketConcurrentCallers(t *testing.T) {
 	var wg sync.WaitGroup
 	var allowed atomic.Int64
 	for range capacity * 2 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			if tb.Allow() {
 				allowed.Add(1)
 			}
-		}()
+		})
 	}
 	wg.Wait()
 
